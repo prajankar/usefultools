@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Toolbench</title>
+<meta name="description" content="Why this site exists and how it is built.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap" style="max-width:760px">
+  <div class="tool-head" style="padding-top:28px"><h1>About</h1></div>
+  <div class="panel"><p>Toolbench is a set of eighty small utilities. Each one does a single job, opens in
+under a second, and runs entirely inside your browser.</p>
+<p>That last part is the whole point. Most tool sites upload your file to a server, convert it there and
+hand you a link. Here the conversion happens on your own machine using the canvas, crypto and speech APIs
+that every modern browser already ships. Your image never leaves the tab. Neither does the contract you
+pasted into the word counter.</p>
+<h2>How it is built</h2>
+<p>Plain HTML, one stylesheet, and vanilla JavaScript. No framework, no build step for the front end, no
+tracking script. The header and footer are injected by <code>assets/js/layout.js</code> so they live in one
+file. The tool pages are generated from a single catalogue by <code>build.py</code>, which also writes
+<code>sitemap.xml</code>.</p>
+<h2>What is missing</h2>
+<p>A dozen tools in the catalogue need something a browser cannot do — a WHOIS query, a backlink index, a
+TLS handshake. Those pages say so plainly instead of showing a form that never works.</p></div>
+</main>
+<script src="assets/js/tools-data.js"></script>
+<script src="assets/js/layout.js"></script>
+</body>
+</html>

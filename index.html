@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toolbench — 80 free tools that run in your browser</title>
+<meta name="description" content="Image converters, calculators, SEO helpers, text utilities, unit converters and developer tools. Everything runs on your device; nothing you paste is uploaded.">
+<link rel="canonical" href="https://example.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Toolbench — 80 free tools that run in your browser">
+<meta property="og:description" content="Eighty small tools for images, text, code and numbers.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Toolbench","url":"https://example.com/",
+"potentialAction":{"@type":"SearchAction","target":"https://example.com/?q={search_term_string}","query-input":"required name=search_term_string"}}
+</script>
+</head>
+<body>
+
+<main id="main">
+  <section class="hero">
+    <div class="wrap">
+      <h1>Eighty small tools, none of which upload your files</h1>
+      <p>Converting an image, counting words, formatting JSON, working out a loan payment. Every tool on
+         this site runs inside your browser, so what you paste or open stays on your device.</p>
+      <div class="bigsearch">
+        <input type="search" id="q" placeholder="What do you need to do?" aria-label="Search all tools" autofocus>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+  </section>
+
+  <div class="wrap"><div class="ad ad-leader">Ad space — 728×90 leaderboard</div></div>
+
+  <div class="wrap" id="results"></div>
+</main>
+
+<script src="assets/js/tools-data.js"></script>
+<script src="assets/js/layout.js"></script>
+<script>
+(function () {
+  var q = document.getElementById("q"),
+      chips = document.getElementById("chips"),
+      results = document.getElementById("results"),
+      active = "all";
+
+  chips.innerHTML = '<button class="chip" data-c="all" aria-pressed="true">Everything</button>' +
+    CATEGORIES.map(function (c) {
+      return '<button class="chip" data-c="' + c.id + '" aria-pressed="false">' + c.label + '</button>';
+    }).join("");
+
+  function tile(t) {
+    var flag = t.server === 1 ? '<span class="flag">Needs a back end</span>'
+             : t.server === 2 ? '<span class="flag">Not built</span>' : '';
+    return '<li><a class="tile" href="tools/' + t.slug + '.html">' +
+      '<span class="name">' + t.name + '</span>' +
+      '<span class="desc">' + t.desc + '</span>' + flag + '</a></li>';
+  }
+
+  function render() {
+    var term = q.value.trim();
+    var list = term ? searchTools(term) : TOOLS_DATA;
+    if (active !== "all") list = list.filter(function (t) { return t.cat === active; });
+
+    if (!list.length) {
+      results.innerHTML = '<p class="empty">Nothing matches “' + term.replace(/</g, "&lt;") +
+        '”. Try a shorter word — “pdf”, “json”, “percent”.</p>';
+      return;
+    }
+    if (term) {
+      results.innerHTML = '<section class="cat"><div class="cat-head"><h2>' + list.length +
+        ' match' + (list.length === 1 ? '' : 'es') + '</h2></div><ul class="grid">' +
+        list.map(tile).join("") + '</ul></section>';
+      return;
+    }
+    results.innerHTML = CATEGORIES.filter(function (c) { return active === "all" || c.id === active; })
+      .map(function (c, i) {
+        var items = list.filter(function (t) { return t.cat === c.id; });
+        if (!items.length) return "";
+        var ad = (i === 2 || i === 5) ? '<div class="ad ad-leader">Ad space — in-feed 728×90</div>' : "";
+        return '<section class="cat" id="' + c.id + '"><div class="cat-head"><h2>' + c.label +
+          '</h2><span class="count">' + items.length + ' tools · ' + c.blurb + '</span></div>' +
+          '<ul class="grid">' + items.map(tile).join("") + '</ul></section>' + ad;
+      }).join("");
+  }
+
+  chips.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-c]"); if (!b) return;
+    active = b.dataset.c;
+    Array.prototype.forEach.call(chips.children, function (c) {
+      c.setAttribute("aria-pressed", String(c === b));
+    });
+    render();
+  });
+  q.addEventListener("input", render);
+
+  var fromUrl = new URLSearchParams(location.search).get("q");
+  if (fromUrl) q.value = fromUrl;
+  render();
+})();
+</script>
+</body>
+</html>
